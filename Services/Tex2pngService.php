@@ -32,7 +32,11 @@ class Tex2pngService
      */
     public function create($tex, $density = 155)
     {
-        $asset = $this->container->get('templating.helper.assets');
+        if ($this->container->has('templating.helper.assets')) {
+            $asset = $this->container->get('templating.helper.assets');
+        } else {
+            $asset = $this->container->get('assets.packages');
+        }
 
         $handler_class = $this->handler_class;
         $tex2png = new $handler_class($tex, $density);
