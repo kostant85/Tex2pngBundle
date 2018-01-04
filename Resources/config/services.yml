@@ -7,12 +7,12 @@ services:
     # Tex2png service
     tex2png:
         class: %tex2png.service%
-        arguments: [%gregwar_tex2png.cache_dir%, %tex2png.class%, @service_container]
+        arguments: [%gregwar_tex2png.cache_dir%, %tex2png.class%, "@service_container"]
 
     # Twig helper
     twig.extension.tex2png:
         class: Gregwar\Tex2pngBundle\Extensions\Tex2pngTwig
-        arguments: [@service_container]
+        arguments: ["@service_container"]
         tags:
             - { name: twig.extension }
 
