@@ -2,10 +2,8 @@
 
 namespace Gregwar\Tex2pngBundle\Extensions;
 
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use Symfony\Component\Form\FormView;
+use Twig\TwigFunction;
 
 /**
  * Tex2pngTwig extension
@@ -14,40 +12,39 @@ use Symfony\Component\Form\FormView;
  */
 class Tex2pngTwig extends \Twig_Extension
 {
-    private $container;
-    private $environment;
+	private $container;
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-    
-    public function initRuntime(\Twig_Environment $environment)
-    {
-        $this->environment = $environment;
-    }
 
-    public function getFunctions()
-    {
-        return array(
-            'tex' => new \Twig_Function_Method($this, 'tex', array('is_safe' => array('html'))),
-            'tex_img' => new \Twig_Function_Method($this, 'tex_img', array('is_safe' => array('html'))),
-        );
-    }
+	public function __construct(ContainerInterface $container)
+	{
+		$this->container = $container;
+	}
 
-    public function tex($tex, $density = 155)
-    {
-        return $this->container->get('tex2png')->create($tex, $density)->generate();
-    }
 
-    public function tex_img($tex, $density = 155)
-    {
-        return $this->tex($tex, $density)->html();
-    }
+	public function getFunctions()
+	{
+		return [
+			'tex'     => new TwigFunction('tex', [$this, 'tex']),
+			'tex_img' => new TwigFunction('tex_img', [$this, 'tex_img']),
+		];
+	}
 
-    public function getName()
-    {
-        return 'tex2png';
-    }
+
+	public function tex($tex, $density = 155)
+	{
+		return $this->container->get('tex2png')->create($tex, $density)->generate();
+	}
+
+
+	public function tex_img($tex, $density = 155)
+	{
+		return $this->tex($tex, $density)->html();
+	}
+
+
+	public function getName()
+	{
+		return 'tex2png';
+	}
 }
 
